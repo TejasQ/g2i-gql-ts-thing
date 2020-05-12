@@ -1,0 +1,14 @@
+{
+  "name": "mock",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "apollo": "^2.27.4",
+    "typescript": "^4.0.0-dev.20200512"
+  },
+  "dependencies": {
+    "apollo-server": "^2.13.1",
+    "casual": "^1.6.2"
+  }
+}

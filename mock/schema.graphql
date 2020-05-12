@@ -1,0 +1,475 @@
+schema {
+  query: query_root
+  mutation: mutation_root
+  subscription: subscription_root
+}
+
+"""
+Direct the client to resolve this field locally, either from the cache or local resolvers.
+"""
+directive @client(
+  """
+  When true, the client will never use the cache for this value. See
+  https://www.apollographql.com/docs/react/essentials/local-state/#forcing-resolvers-with-clientalways-true
+  """
+  always: Boolean
+) on FIELD | FRAGMENT_DEFINITION | INLINE_FRAGMENT
+
+"""
+Export this locally resolved field as a variable to be used in the remainder of this query. See
+https://www.apollographql.com/docs/react/essentials/local-state/#using-client-fields-as-variables
+"""
+directive @export(
+  """The variable name to export this field as."""
+  as: String!
+) on FIELD
+
+"""
+Specify a custom store key for this result. See
+https://www.apollographql.com/docs/react/advanced/caching/#the-connection-directive
+"""
+directive @connection(
+  """Specify the store key."""
+  key: String!
+
+  """
+  An array of query argument names to include in the generated custom store key.
+  """
+  filter: [String!]
+) on FIELD
+
+"""
+expression to compare columns of type Int. All fields are combined with logical 'AND'.
+"""
+input Int_comparison_exp {
+  _eq: Int
+  _gt: Int
+  _gte: Int
+  _in: [Int!]
+  _is_null: Boolean
+  _lt: Int
+  _lte: Int
+  _neq: Int
+  _nin: [Int!]
+}
+
+"""mutation root"""
+type mutation_root {
+  """
+  delete data from the table: "todos"
+  """
+  delete_todos(
+    """filter the rows which have to be deleted"""
+    where: todos_bool_exp!
+  ): todos_mutation_response
+
+  """
+  insert data into the table: "todos"
+  """
+  insert_todos(
+    """the rows to be inserted"""
+    objects: [todos_insert_input!]!
+  ): todos_mutation_response
+
+  """
+  insert a single row into the table: "todos"
+  """
+  insert_todos_one(
+    """the row to be inserted"""
+    object: todos_insert_input!
+  ): todos
+
+  """
+  update data of the table: "todos"
+  """
+  update_todos(
+    """increments the integer columns with given value of the filtered values"""
+    _inc: todos_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: todos_set_input
+
+    """filter the rows which have to be updated"""
+    where: todos_bool_exp!
+  ): todos_mutation_response
+}
+
+"""column ordering options"""
+enum order_by {
+  """in the ascending order, nulls last"""
+  asc
+
+  """in the ascending order, nulls first"""
+  asc_nulls_first
+
+  """in the ascending order, nulls last"""
+  asc_nulls_last
+
+  """in the descending order, nulls first"""
+  desc
+
+  """in the descending order, nulls first"""
+  desc_nulls_first
+
+  """in the descending order, nulls last"""
+  desc_nulls_last
+}
+
+"""query root"""
+type query_root {
+  """
+  fetch data from the table: "todos"
+  """
+  todos(
+    """distinct select on columns"""
+    distinct_on: [todos_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [todos_order_by!]
+
+    """filter the rows returned"""
+    where: todos_bool_exp
+  ): [todos!]!
+
+  """
+  fetch aggregated fields from the table: "todos"
+  """
+  todos_aggregate(
+    """distinct select on columns"""
+    distinct_on: [todos_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [todos_order_by!]
+
+    """filter the rows returned"""
+    where: todos_bool_exp
+  ): todos_aggregate!
+}
+
+"""
+expression to compare columns of type String. All fields are combined with logical 'AND'.
+"""
+input String_comparison_exp {
+  _eq: String
+  _gt: String
+  _gte: String
+  _ilike: String
+  _in: [String!]
+  _is_null: Boolean
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+  _nilike: String
+  _nin: [String!]
+  _nlike: String
+  _nsimilar: String
+  _similar: String
+}
+
+"""subscription root"""
+type subscription_root {
+  """
+  fetch data from the table: "todos"
+  """
+  todos(
+    """distinct select on columns"""
+    distinct_on: [todos_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [todos_order_by!]
+
+    """filter the rows returned"""
+    where: todos_bool_exp
+  ): [todos!]!
+
+  """
+  fetch aggregated fields from the table: "todos"
+  """
+  todos_aggregate(
+    """distinct select on columns"""
+    distinct_on: [todos_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [todos_order_by!]
+
+    """filter the rows returned"""
+    where: todos_bool_exp
+  ): todos_aggregate!
+}
+
+"""
+columns and relationships of "todos"
+"""
+type todos {
+  id: Int!
+  text: String
+}
+
+"""
+aggregated selection of "todos"
+"""
+type todos_aggregate {
+  aggregate: todos_aggregate_fields
+  nodes: [todos!]!
+}
+
+"""
+aggregate fields of "todos"
+"""
+type todos_aggregate_fields {
+  avg: todos_avg_fields
+  count(columns: [todos_select_column!], distinct: Boolean): Int
+  max: todos_max_fields
+  min: todos_min_fields
+  stddev: todos_stddev_fields
+  stddev_pop: todos_stddev_pop_fields
+  stddev_samp: todos_stddev_samp_fields
+  sum: todos_sum_fields
+  var_pop: todos_var_pop_fields
+  var_samp: todos_var_samp_fields
+  variance: todos_variance_fields
+}
+
+"""
+order by aggregate values of table "todos"
+"""
+input todos_aggregate_order_by {
+  avg: todos_avg_order_by
+  count: order_by
+  max: todos_max_order_by
+  min: todos_min_order_by
+  stddev: todos_stddev_order_by
+  stddev_pop: todos_stddev_pop_order_by
+  stddev_samp: todos_stddev_samp_order_by
+  sum: todos_sum_order_by
+  var_pop: todos_var_pop_order_by
+  var_samp: todos_var_samp_order_by
+  variance: todos_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "todos"
+"""
+input todos_arr_rel_insert_input {
+  data: [todos_insert_input!]!
+}
+
+"""aggregate avg on columns"""
+type todos_avg_fields {
+  id: Float
+}
+
+"""
+order by avg() on columns of table "todos"
+"""
+input todos_avg_order_by {
+  id: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "todos". All fields are combined with a logical 'AND'.
+"""
+input todos_bool_exp {
+  _and: [todos_bool_exp]
+  _not: todos_bool_exp
+  _or: [todos_bool_exp]
+  id: Int_comparison_exp
+  text: String_comparison_exp
+}
+
+"""
+input type for incrementing integer column in table "todos"
+"""
+input todos_inc_input {
+  id: Int
+}
+
+"""
+input type for inserting data into table "todos"
+"""
+input todos_insert_input {
+  id: Int
+  text: String
+}
+
+"""aggregate max on columns"""
+type todos_max_fields {
+  id: Int
+  text: String
+}
+
+"""
+order by max() on columns of table "todos"
+"""
+input todos_max_order_by {
+  id: order_by
+  text: order_by
+}
+
+"""aggregate min on columns"""
+type todos_min_fields {
+  id: Int
+  text: String
+}
+
+"""
+order by min() on columns of table "todos"
+"""
+input todos_min_order_by {
+  id: order_by
+  text: order_by
+}
+
+"""
+response of any mutation on the table "todos"
+"""
+type todos_mutation_response {
+  """number of affected rows by the mutation"""
+  affected_rows: Int!
+
+  """data of the affected rows by the mutation"""
+  returning: [todos!]!
+}
+
+"""
+input type for inserting object relation for remote table "todos"
+"""
+input todos_obj_rel_insert_input {
+  data: todos_insert_input!
+}
+
+"""
+ordering options when selecting data from "todos"
+"""
+input todos_order_by {
+  id: order_by
+  text: order_by
+}
+
+"""
+select columns of table "todos"
+"""
+enum todos_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  text
+}
+
+"""
+input type for updating data in table "todos"
+"""
+input todos_set_input {
+  id: Int
+  text: String
+}
+
+"""aggregate stddev on columns"""
+type todos_stddev_fields {
+  id: Float
+}
+
+"""
+order by stddev() on columns of table "todos"
+"""
+input todos_stddev_order_by {
+  id: order_by
+}
+
+"""aggregate stddev_pop on columns"""
+type todos_stddev_pop_fields {
+  id: Float
+}
+
+"""
+order by stddev_pop() on columns of table "todos"
+"""
+input todos_stddev_pop_order_by {
+  id: order_by
+}
+
+"""aggregate stddev_samp on columns"""
+type todos_stddev_samp_fields {
+  id: Float
+}
+
+"""
+order by stddev_samp() on columns of table "todos"
+"""
+input todos_stddev_samp_order_by {
+  id: order_by
+}
+
+"""aggregate sum on columns"""
+type todos_sum_fields {
+  id: Int
+}
+
+"""
+order by sum() on columns of table "todos"
+"""
+input todos_sum_order_by {
+  id: order_by
+}
+
+"""aggregate var_pop on columns"""
+type todos_var_pop_fields {
+  id: Float
+}
+
+"""
+order by var_pop() on columns of table "todos"
+"""
+input todos_var_pop_order_by {
+  id: order_by
+}
+
+"""aggregate var_samp on columns"""
+type todos_var_samp_fields {
+  id: Float
+}
+
+"""
+order by var_samp() on columns of table "todos"
+"""
+input todos_var_samp_order_by {
+  id: order_by
+}
+
+"""aggregate variance on columns"""
+type todos_variance_fields {
+  id: Float
+}
+
+"""
+order by variance() on columns of table "todos"
+"""
+input todos_variance_order_by {
+  id: order_by
+}
